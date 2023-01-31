@@ -20,7 +20,14 @@
                 <input class="form-control" type="search" placeholder="Contato" aria-label="Search" name="filter_contact">
                 <button class="btn btn-success" type="submit">Pesquisar</button>
             </form>
-            <a class="btn btn-primary float-end" type="buttom" href="{{ route( 'user.edit' ) }}"><i class="bi bi-plus-lg"></i>Novo</a></a>
+            <a class="btn btn-primary float-end" type="buttom" href="{{ route( 'user.edit' ) }}">Novo</a></a>
+            @auth
+            <a class="btn btn-primary float-end" type="buttom" href="{{ route( 'user.logout' ) }}">Logout</a></a>
+            @endauth
+            @guest
+            <a class="btn btn-primary float-end" type="buttom" href="{{ route( 'user.login' ) }}">Login</a></a>
+            @endguest
+
             </div>
         </nav>
 
@@ -47,10 +54,15 @@
                         <td>{{ date("d-m-Y H:i",strtotime( $item->created_at ) ) }}</td>
                         <td>
                             <div class="d-grid gap-1 d-md-flex justify-content-md-end action-buttons">
+                            @auth
                                 <a class="btn" type="buttom" href="{{ route( 'user.edit', [ $item->id ] ) }}">Editar</a>
                                 <a class="btn" type="button" href="{{ route( 'user.delete', [ $item->id ] ) }}">Excluir</a>
+                            @endauth
+                            @guest
+                                &nbsp;
+                            @endguest
                             </div>
-                        </td>
+                    </td>
                     </tr>
                     @endforeach
                 </tbody>

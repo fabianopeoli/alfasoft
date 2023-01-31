@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,8 +16,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [UserController::class,'index'])->name('user.index');
-Route::get('/edit/{id?}', [UserController::class,'edit'])->name('user.edit');
-Route::post('/save', [UserController::class,'store'])->name('user.store');
-Route::get('/delete/{id}',[UserController::class,'delete'])->name('user.delete');
-Route::delete('/destroy', [UserController::class,'destroy'])->name('user.destroy');
+Route::get('/', [ UserController::class,'index' ] )->name('user.index');
+Route::get('/edit/{id?}', [ UserController::class,'edit'])->name('user.edit');
+Route::post('/save', [ UserController::class,'store'])->name('user.store');
+Route::get('/delete/{id}',[ UserController::class,'delete'])->name('user.delete');
+Route::delete('/destroy', [ UserController::class,'destroy'])->name('user.destroy');
+
+Route::get('/login', [ LoginController::class,'index'])->name('user.login');
+Route::get('/logout', [ LoginController::class,'logout'])->name('user.logout');
+Route::post('/auth', [ LoginController::class,'authenticate'])->name('login.auth');
