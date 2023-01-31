@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\QueryException;
 use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -51,45 +54,43 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $request->validated();
+        $success = false;
 
-        $success_text = '';
+        $request->validated();
 
         $user = User::find($request->id);
 
+        $request->validate([
+            'email' => [Rule::unique('users')->ignore($user)],
+            'contact' => [Rule::unique('users')->ignore($user)],
+        ],[
+            'email.unique' => 'Email já existente !',
+            'contact.unique' => 'Contato já existente !',
+        ]);
+
+
         if(empty($user->id)){
             $user = new User;
-            $is_new = true;
-            $success_text = 'incluído';
+            $msg = "Contato incluído com sucesso !";
         } else {
-            $success_text = 'alterado';
+            $msg = "Contato alterado com sucesso !";
         }
 
         $user->name = $request->name;
         $user->email = $request->email;
         $user->contact = $request->contact;
 
-        // $user->password = bcrypt('@1234');
+        $user->password = bcrypt('@1234');
 
-        $user->save();
+        try{
+            $success = $user->save();
+        } catch(QueryException $e){
+            $msg = $e->getMessage();
+        }
 
-        $msg = "Usuário {$success_text} com sucesso !";
-
-        return redirect()->intended(route('user.index'))->with($msg);
-
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response JSON
-     */
-    public function show($id)
-    {
-        $user = User::find($id);
-
-        return response()->json($user, 200);
+        if($success != false){
+            return redirect()->route('user.index')->with($msg);
+        }
     }
 
     /**
@@ -98,7 +99,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id, $redirect = null)
+    public function edit($id = null)
     {
         $user = User::find($id);
 
@@ -106,15 +107,30 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Delete record
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function delete($id)
     {
-        //
+        $user = User::find($id);
+
+        return view('users.delete',compact('user'));
+    }
+
+    /**
+     * Delete record
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request)
+    {
+        $user = User::find($request->id);
+        $user->delete();
+
+        return redirect()->route('user.index');
     }
 
 }

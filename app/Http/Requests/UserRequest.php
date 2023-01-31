@@ -3,7 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 class UserRequest extends FormRequest
 {
     /**
@@ -13,7 +14,7 @@ class UserRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,8 +26,8 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|min:5|max:128',
-            'contact' => 'required|unique:users,contact|size:9',
-            'email' => 'required|unique:users,email|email',
+            'contact' => 'required|size:9',
+            'email' => 'required|email',
         ];
     }
 
