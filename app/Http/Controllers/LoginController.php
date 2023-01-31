@@ -32,10 +32,10 @@ class LoginController extends Controller
         if (Auth::attempt($credentials,$request->remember)) {
             $request->session()->regenerate();
 
-            return redirect()->intended('/');;
+            return redirect()->intended(route('user.index'));
         }
 
-        return redirect()->back()->with('error', 'Usuário ou senha inválidos');
+        return redirect()->route('user.login')->with('Usuário ou senha inválidos');
     }
 
     /**
