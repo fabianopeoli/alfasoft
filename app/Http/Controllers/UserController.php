@@ -80,7 +80,7 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->contact = $request->contact;
 
-        $user->password = bcrypt('@1234');
+        $user->password = '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'; // password
 
         try{
             $success = $user->save();
